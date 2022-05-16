@@ -11,7 +11,7 @@ const CATEGORY =
   "COVID-19 Test For Travel To China, Serum and Nasal Swab Collection | COVID-19 中国旅行检测, 血清和鼻拭测试";
 
 export const scheduleDailyReports = pubsub
-  .schedule("0 0,10,13,17 * * 1-5") // 0 0,10,13,17 * * 1-5
+  .schedule("0 15 * * 1-5") // 0 15 * * 1-5
   .timeZone("America/Los_Angeles")
   .onRun(async (_) => {
     const storage = blob.bucket(firebaseConfig()?.storageBucket);

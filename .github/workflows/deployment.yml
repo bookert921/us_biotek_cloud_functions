@@ -1,16 +1,16 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Production Deployment
+name: Development Deployment
 
 on:
   push:
-    branches: [main]
+    branches: [development]
 
 jobs:
-  deploy_to_production:
+  deploy_to_development:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
     steps:
       - uses: actions/checkout@v2
       - name: Install Firebase Emulator Suite
@@ -21,9 +21,9 @@ jobs:
       - name: Jest testing (including firestore rules)
         run: npm run test
         working-directory: functions
-      - name: deploy to production
+      - name: deploy to development
         uses: w9jds/firebase-action@master
         with:
-          args: deploy -P production --only functions:acuity,functions:makePayment,functions:createDailyReport
+          args: deploy -P development --only functions:acuity,functions:makePayment,functions:createDailyReport
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
