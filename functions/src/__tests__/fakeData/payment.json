@@ -1,0 +1,12 @@
+{
+  "amount": 45800,
+  "card_number": "4242424242424242",
+  "expiration": ["2022", "11"],
+  "cc_security_code": "123",
+  "cc_name_on_card": "Jake Paul",
+  "address1": "1234 17th Ave SE",
+  "address2": "",
+  "city": "Seattle",
+  "province": "WA",
+  "zip": "98105"
+}

@@ -1,0 +1,15 @@
+
+# TypeScript v1 declaration files
+typings/
+
+# Node.js dependency directory
+node_modules/
+
+.runtimeconfig.json
+
+us-biotek-dev-admin-sdk.json
+white-form-303916-firebase-adminsdk-wj5at-e47c11bc52.json
+us-biotek-prac-firebase-adminsdk-8a2r6-7268ef7ba5.json
+
+.firebaserc
+.runtimeconfig.json

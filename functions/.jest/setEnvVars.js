@@ -1,0 +1,17 @@
+require("dotenv").config();
+process.env.DATABASE_URL = process.env.DATABASE_URL;
+process.env.STORAGE_BUCKET = process.env.STORAGE_BUCKET;
+process.env.PROJECT_ID = process.env.PROJECT_ID;
+process.env.ACUITY_USER_ID = process.env.ACUITY_USER_ID;
+process.env.ACUITY_API_KEY = process.env.ACUITY_API_KEY;
+process.env.ACUITY_URL = process.env.ACUITY_URL;
+process.env.STRIPE_KEY_LOCATION = process.env.STRIPE_KEY_LOCATION;
+process.env.ACCOUNT_TYPE = process.env.ACCOUNT_TYPE;
+process.env.PRIVATE_KEY_ID = process.env.PRIVATE_KEY_ID;
+process.env.PRIVATE_KEY = process.env.PRIVATE_KEY;
+process.env.CLIENT_EMAIL = process.env.CLIENT_EMAIL;
+process.env.CLIENT_ID = process.env.CLIENT_ID;
+process.env.AUTH_URI = process.env.AUTH_URI;
+process.env.TOKEN_URI = process.env.TOKEN_URI;
+process.env.AUTH_PROVIDER = process.env.AUTH_PROVIDER;
+process.env.CLIENT_X = process.env.CLIENT_X;

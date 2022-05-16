@@ -1,0 +1,10 @@
+{
+  "projects": {
+    "default": "us-biotek-dev",
+    "development": "us-biotek-dev",
+    "production": "white-form-303916",
+    "staging": "us-biotek-staging",
+    "promotional": "us-biotek-promotional",
+    "practitioner": "us-biotek-prac"
+  }
+}
