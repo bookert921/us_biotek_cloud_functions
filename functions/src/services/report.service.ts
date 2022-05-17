@@ -37,7 +37,6 @@ export function gatherReportData(snapshot: any) {
     const status = document?.get("status");
 
     if (cart?.line_items) {
-      count++;
       cart.line_items.forEach((item) => {
         const report: Partial<Record<keyof DailyReport, any>> = {};
         report.No = count;
@@ -137,6 +136,7 @@ export function gatherReportData(snapshot: any) {
         report["Status"] = status;
         csvRows.push(report);
       });
+      count++;
     } else {
       const report: Partial<Record<keyof DailyReport, any>> = {};
       report.No = count;
