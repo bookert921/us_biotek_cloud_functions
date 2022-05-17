@@ -7,11 +7,12 @@ import * as os from "os";
 import * as fs from "fs-extra";
 import { createOrderCSV, gatherReportData } from "../../services";
 
-const CATEGORY =
-  "COVID-19 Test For Travel To China, Serum and Nasal Swab Collection | COVID-19 中国旅行检测, 血清和鼻拭测试";
+// const CATEGORY =
+//   "COVID-19 Test For Travel To China, Serum and Nasal Swab Collection | COVID-19 中国旅行检测, 血清和鼻拭测试";
 
 export const scheduleDailyReports = pubsub
-  .schedule("30 10 * * 1-5") // 0 15 * * 1-5
+  // .schedule("30 10 * * 1-5") // 0 15 * * 1-5
+  .schedule("25 18 * * *")
   .timeZone("America/Los_Angeles")
   .onRun(async (_) => {
     const storage = blob.bucket(firebaseConfig()?.storageBucket);
@@ -28,16 +29,17 @@ export const scheduleDailyReports = pubsub
     try {
       /* Create CSV from Orders range */
       logger.info("Grabbing orders...");
-      let q = ordersRef.where(
-        "appointment.date",
-        "==",
-        getTimezoneTime("MMMM D, YYYY") as string
-      );
-      q = q.where("appointment.category", "==", CATEGORY);
+      // let q = ordersRef.where(
+      //   "appointment.date",
+      //   "==",
+      //   getTimezoneTime("MMMM D, YYYY") as string
+      // );
+      // q = q.where("appointment.category", "==", CATEGORY);
 
-      /* Generate report to upload */
-      const snapshot = await q.get();
+      // /* Generate report to upload */
+      // const snapshot = await q.get();
 
+      const snapshot = await ordersRef.get();
       // Handle edge case of empty snapshot
       if (snapshot.size === 0) {
         logger.log("No data to create file with");

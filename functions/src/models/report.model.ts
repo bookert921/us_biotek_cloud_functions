@@ -45,7 +45,8 @@ export interface DailyReport {
   Tax: number;
   Currency: string;
   Amount: string;
-  "Line Items": string;
+  "Line Item": string;
+  Quantity: string;
   "Purchased By": string;
   "Practitioner ID": string;
   "Practitioner Name": string;
@@ -53,6 +54,10 @@ export interface DailyReport {
   "Appointment Date": string;
   "Appointment Start Time": string;
   "Appointment End Time": string;
+  "Practitioner First Name": string;
+  "Practitioner Last Name": string;
+  "Antibody(s) ordered {Sub Category}": string;
+  "Kit Type {Sub Type}": string;
 }
 
 export const ReportProps = [

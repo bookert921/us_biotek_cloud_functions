@@ -34,7 +34,10 @@ export interface Product {
   keywords?: string;
   subType?: Array<any>;
   subTypeSelected?: any;
+  subTypeSelectedText?: any;
+  subCategorySelectedText?: any;
   subCategory?: Array<any>;
+  subCategorySelected?: Array<{ checked: boolean; name: string }>;
   dependency?: {
     price_dependent: boolean;
     dependency_code: string;

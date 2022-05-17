@@ -36,61 +36,123 @@ export function gatherReportData(snapshot: any) {
     const cart: ShoppingCart = document.get("cart");
     const appointment: AcuitySchedule = document.get("appointment");
 
-    let lineItems = "";
     if (cart?.line_items) {
-      lineItems = provideLineItemsMetadata(cart?.line_items, true);
-    }
+      report.No = count++;
+      cart.line_items.forEach((item) => {
+        const product = item?.product;
+        const quantity = item?.quantity;
 
-    report.No = count++;
-    report["Clinic/Physician"] = "";
-    report["Ext ID"] = "";
-    report["Last Name"] = wherePropertyExists([
-      user?.last_name,
-      cart?.last_name,
-      appointment?.lastName,
-    ]);
-    report["Passport Number"] = user?.passport_number || "";
-    report["Vaccination Status"] = user?.vaccinated || "";
-    report["First Name"] = wherePropertyExists([
-      user?.first_name,
-      cart?.first_name,
-      appointment?.firstName,
-    ]);
-    report["M.I."] = user?.middle_name || "";
-    report["Sex(F/M)"] = user?.gender;
-    report["Date of Birth"] = user?.dob || "";
-    report["Test Panel"] = defineTestPanel(appointment?.type);
-    report.Type = appointment?.type || "";
-    report.Email = wherePropertyExists([
-      user?.email,
-      cart?.email,
-      appointment?.email,
-    ]);
-    report.Address =
-      wherePropertyExists([user?.address1, cart?.address1]) +
-      wherePropertyExists([user?.address2, cart?.address2]);
-    report.City = wherePropertyExists([
-      user?.city,
-      cart?.city,
-      appointment?.location
-        .split(" ")[0]
-        .substring(0, appointment?.location.split(" ")[0].length - 1),
-    ]);
-    report.State = wherePropertyExists([
-      user?.province,
-      cart?.province,
-      appointment?.location.split(" ")[1],
-    ]);
-    report.Zip = user?.zip || cart?.zip;
-    report.Country = user?.country || cart?.country;
-    report.Phone = formatPhone(
-      user?.phone_number || cart?.phone || appointment?.phone || ""
-    );
-    report.Nationality = user?.nationality || "";
-    report["Line Items"] = lineItems;
-    report["Appointment Date"] = appointment?.date || "";
-    report["Appointment Start Time"] = appointment?.time || "";
-    csvRows.push(report);
+        report["Clinic/Physician"] = "";
+        report["Ext ID"] = "";
+        report["Last Name"] = wherePropertyExists([
+          user?.last_name,
+          cart?.last_name,
+          appointment?.lastName,
+        ]);
+        report["Passport Number"] = user?.passport_number || "";
+        report["Vaccination Status"] = user?.vaccinated || "";
+        report["First Name"] = wherePropertyExists([
+          user?.first_name,
+          cart?.first_name,
+          appointment?.firstName,
+        ]);
+        report["M.I."] = user?.middle_name || "";
+        report["Sex(F/M)"] = user?.gender;
+        report["Date of Birth"] = user?.dob || "";
+        report["Test Panel"] = defineTestPanel(appointment?.type);
+        report.Type = appointment?.type || "";
+        report.Email = wherePropertyExists([
+          user?.email,
+          cart?.email,
+          appointment?.email,
+        ]);
+        report.Address =
+          wherePropertyExists([user?.address1, cart?.address1]) +
+          wherePropertyExists([user?.address2, cart?.address2]);
+        report.City = wherePropertyExists([
+          user?.city,
+          cart?.city,
+          appointment?.location
+            .split(" ")[0]
+            .substring(0, appointment?.location.split(" ")[0].length - 1),
+        ]);
+        report.State = wherePropertyExists([
+          user?.province,
+          cart?.province,
+          appointment?.location.split(" ")[1],
+        ]);
+        report.Zip = user?.zip || cart?.zip;
+        report.Country = user?.country || cart?.country;
+        report.Phone = formatPhone(
+          user?.phone_number || cart?.phone || appointment?.phone || ""
+        );
+        report.Nationality = user?.nationality || "";
+        report["Line Item"] = product?.title;
+        report["Quantity"] = quantity;
+        report["Appointment Date"] = appointment?.date || "";
+        report["Appointment Start Time"] = appointment?.time || "";
+        report["Antibody(s) ordered {Sub Category}"] =
+          product?.subCategorySelectedText;
+        report["Kit Type {Sub Type}"] =
+          product?.subTypeSelectedText ||
+          (product?.subType &&
+            product?.subType[product?.subTypeSelected - 1]?.name);
+        csvRows.push(report);
+      });
+    } else {
+      report.No = count++;
+      report["Clinic/Physician"] = "";
+      report["Ext ID"] = "";
+      report["Last Name"] = wherePropertyExists([
+        user?.last_name,
+        cart?.last_name,
+        appointment?.lastName,
+      ]);
+      report["Passport Number"] = user?.passport_number || "";
+      report["Vaccination Status"] = user?.vaccinated || "";
+      report["First Name"] = wherePropertyExists([
+        user?.first_name,
+        cart?.first_name,
+        appointment?.firstName,
+      ]);
+      report["M.I."] = user?.middle_name || "";
+      report["Sex(F/M)"] = user?.gender;
+      report["Date of Birth"] = user?.dob || "";
+      report["Test Panel"] = defineTestPanel(appointment?.type);
+      report.Type = appointment?.type || "";
+      report.Email = wherePropertyExists([
+        user?.email,
+        cart?.email,
+        appointment?.email,
+      ]);
+      report.Address =
+        wherePropertyExists([user?.address1, cart?.address1]) +
+        wherePropertyExists([user?.address2, cart?.address2]);
+      report.City = wherePropertyExists([
+        user?.city,
+        cart?.city,
+        appointment?.location
+          .split(" ")[0]
+          .substring(0, appointment?.location.split(" ")[0].length - 1),
+      ]);
+      report.State = wherePropertyExists([
+        user?.province,
+        cart?.province,
+        appointment?.location.split(" ")[1],
+      ]);
+      report.Zip = user?.zip || cart?.zip;
+      report.Country = user?.country || cart?.country;
+      report.Phone = formatPhone(
+        user?.phone_number || cart?.phone || appointment?.phone || ""
+      );
+      report.Nationality = user?.nationality || "";
+      report["Line Item"] = "";
+      report["Appointment Date"] = appointment?.date || "";
+      report["Appointment Start Time"] = appointment?.time || "";
+      report["Antibody(s) ordered {Sub Category}"] = "";
+      report["Kit Type {Sub Type}"] = "";
+      csvRows.push(report);
+    }
   });
   return csvRows;
 }
@@ -198,7 +260,7 @@ export function gatherFullReportData(snapshot: any) {
     report.Tax = cart?.tax;
     report.Currency = cart?.currency;
     report.Amount = cart?.amount || appointment?.amountPaid;
-    report["Line Items"] = lineItems;
+    report["Line Item"] = lineItems;
     report["Purchased By"] = cart?.prac_pay;
     report["Practitioner ID"] = cart?.customer_id;
     report["Practitioner Name"] =
