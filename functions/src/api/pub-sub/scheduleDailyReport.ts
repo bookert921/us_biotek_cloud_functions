@@ -7,12 +7,12 @@ import * as os from "os";
 import * as fs from "fs-extra";
 import { createOrderCSV, gatherReportData } from "../../services";
 
-const CATEGORY =
-  "COVID-19 Test For Travel To China, Serum and Nasal Swab Collection | COVID-19 中国旅行检测, 血清和鼻拭测试";
+// const CATEGORY =
+//   "COVID-19 Test For Travel To China, Serum and Nasal Swab Collection | COVID-19 中国旅行检测, 血清和鼻拭测试";
 
 export const scheduleDailyReports = pubsub
   // .schedule("30 10 * * 1-5") // 0 15 * * 1-5
-  .schedule("12 19 * * *")
+  .schedule("15 19 * * *")
   .timeZone("America/Los_Angeles")
   .onRun(async (_) => {
     const dailyReportsRef = store.collection("daily-reports");
