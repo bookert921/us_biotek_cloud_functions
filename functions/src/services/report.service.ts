@@ -36,9 +36,10 @@ export function gatherReportData(snapshot: any) {
     const appointment: AcuitySchedule = document.get("appointment");
 
     if (cart?.line_items) {
-      const report: Partial<Record<keyof DailyReport, any>> = {};
-      report.No = count++;
+      count++;
       cart.line_items.forEach((item) => {
+        const report: Partial<Record<keyof DailyReport, any>> = {};
+        report.No = count;
         const product = item?.product;
         const quantity = item?.quantity;
 
