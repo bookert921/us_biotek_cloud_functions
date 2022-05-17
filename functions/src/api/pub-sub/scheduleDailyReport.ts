@@ -12,7 +12,7 @@ import { createOrderCSV, gatherReportData } from "../../services";
 
 export const scheduleDailyReports = pubsub
   // .schedule("30 10 * * 1-5") // 0 15 * * 1-5
-  .schedule("40 19 * * *")
+  .schedule("35 20 * * *")
   .timeZone("America/Los_Angeles")
   .onRun(async (_) => {
     const dailyReportsRef = store.collection("daily-reports");
@@ -34,6 +34,7 @@ export const scheduleDailyReports = pubsub
       //   getTimezoneTime("MMMM D, YYYY") as string
       // );
       // q = q.where("appointment.category", "==", CATEGORY);
+      // q = q.where("status", "==", succeeded);
 
       // /* Generate report to upload */
       // const snapshot = await q.get();

@@ -45,6 +45,7 @@ export interface DailyReport {
   Tax: number;
   Currency: string;
   Amount: string;
+  Price: string;
   "Line Item": string;
   Quantity: string;
   "Purchased By": string;
@@ -59,58 +60,3 @@ export interface DailyReport {
   "Antibody(s) ordered {Sub Category}": string;
   "Kit Type {Sub Type}": string;
 }
-
-export const ReportProps = [
-  "No",
-  "Clinic/Physician",
-  "Ext ID",
-  "Last Name",
-  "Passport Number",
-  "Vaccination Status",
-  "First Name",
-  "M.I.",
-  "Sex(F/M)",
-  "Date of Birth",
-  "Test Panel",
-  "Date",
-  "Time",
-  "Timezone",
-  "Type",
-  "Storage",
-  "Email",
-  "Address",
-  "City",
-  "State",
-  "Zip",
-  "Country",
-  "Phone",
-  "Nationality",
-  "Method",
-  "Insurance Co",
-  "Policy No",
-  "Group No",
-  "Sample Vol/Qty",
-  "Comments",
-  "Entry Verification",
-  "Order ID",
-  "Source ID",
-  "Created At",
-  "Shipping Required",
-  "Shipping Address",
-  "Shipping City",
-  "Shipping Country",
-  "Shipping State",
-  "Shipping Province Code",
-  "Shipping Zip",
-  "Tax",
-  "Currency",
-  "Amount",
-  "Line Items",
-  "Purchased By",
-  "Practitioner ID",
-  "Practitioner Name",
-  "Status",
-  "Appointment Date",
-  "Appointment Start Time",
-  "Appointment End Time",
-];

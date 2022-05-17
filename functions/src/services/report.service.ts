@@ -34,6 +34,7 @@ export function gatherReportData(snapshot: any) {
     const user: User = document.get("user");
     const cart: ShoppingCart = document.get("cart");
     const appointment: AcuitySchedule = document.get("appointment");
+    const status = document?.get("status");
 
     if (cart?.line_items) {
       count++;
@@ -50,8 +51,8 @@ export function gatherReportData(snapshot: any) {
           cart?.last_name,
           appointment?.lastName,
         ]);
-        report["Passport Number"] = user?.passport_number || "";
-        report["Vaccination Status"] = user?.vaccinated || "";
+        // report["Passport Number"] = user?.passport_number || "";
+        // report["Vaccination Status"] = user?.vaccinated || "";
         report["First Name"] = wherePropertyExists([
           user?.first_name,
           cart?.first_name,
@@ -60,8 +61,10 @@ export function gatherReportData(snapshot: any) {
         report["M.I."] = user?.middle_name || "";
         report["Sex(F/M)"] = user?.gender;
         report["Date of Birth"] = user?.dob || "";
-        report["Test Panel"] = defineTestPanel(appointment?.type);
+        report["Test Panel"] = "Drop Shipping";
+
         report.Type = appointment?.type || "";
+        report.Storage = "";
         report.Email = wherePropertyExists([
           user?.email,
           cart?.email,
@@ -87,22 +90,57 @@ export function gatherReportData(snapshot: any) {
         report.Phone = formatPhone(
           user?.phone_number || cart?.phone || appointment?.phone || ""
         );
-        report.Nationality = user?.nationality || "";
+        // report.Nationality = user?.nationality || "";
+        report["Insurance Co"] = user?.insurance_name;
+        report["Policy No"] = user?.insurance_policy_number;
+        report["Group No"] = user?.insurance_group_number;
+        report["Sample Vol/Qty"] = "";
+        report["Comments"] = "";
+        report["Entry Verification"] = "";
+        report["Order ID"] = snapshot.id;
+        report["Source ID"] = "Drop Ship";
+        report["Created At"] = getTimezoneTime("x") as string;
+        report["Shipping Required"] = cart?.shipping_required;
+        report["Shipping Address"] = cart?.shipping_address
+          ? `${cart.shipping_address?.address1} ${cart.shipping_address?.address2}`
+          : "";
+        report["Shipping City"] = cart?.shipping_address?.city;
+        report["Shipping Country"] = cart?.shipping_address?.country;
+        report["Shipping State"] = cart?.shipping_address?.province;
+        report["Shipping Province Code"] =
+          cart?.shipping_address?.province_code;
+        report["Shipping Zip"] = cart?.shipping_address?.zip;
+        report.Tax = cart?.tax;
+        report.Currency = cart?.currency;
+        report.Amount = cart?.amount || appointment?.amountPaid;
         report["Line Item"] = product?.title;
+        report["Price"] = product?.price;
         report["Quantity"] = quantity;
-        report["Appointment Date"] = appointment?.date || "";
-        report["Appointment Start Time"] = appointment?.time || "";
+        // report["Appointment Date"] = appointment?.date || "";
+        // report["Appointment Start Time"] = appointment?.time || "";
+        report["Purchased By"] = cart?.prac_pay;
+        report["Practitioner ID"] = cart?.customer_id;
+        report["Practitioner Name"] =
+          cart?.practitioner_name ||
+          (cart?.prac_first_name !== undefined &&
+          cart?.prac_last_name != undefined
+            ? `${cart?.prac_first_name} ${cart?.prac_last_name}`
+            : "");
+        report["Practitioner First Name"] = cart?.prac_first_name;
+        report["Practitioner Last Name"] = cart?.prac_last_name;
         report["Antibody(s) ordered {Sub Category}"] =
           product?.subCategorySelectedText;
         report["Kit Type {Sub Type}"] =
           product?.subTypeSelectedText ||
           (product?.subType &&
             product?.subType[product?.subTypeSelected - 1]?.name);
+        report["Status"] = status;
         csvRows.push(report);
       });
     } else {
       const report: Partial<Record<keyof DailyReport, any>> = {};
-      report.No = count++;
+      report.No = count;
+
       report["Clinic/Physician"] = "";
       report["Ext ID"] = "";
       report["Last Name"] = wherePropertyExists([
@@ -110,8 +148,8 @@ export function gatherReportData(snapshot: any) {
         cart?.last_name,
         appointment?.lastName,
       ]);
-      report["Passport Number"] = user?.passport_number || "";
-      report["Vaccination Status"] = user?.vaccinated || "";
+      // report["Passport Number"] = user?.passport_number || "";
+      // report["Vaccination Status"] = user?.vaccinated || "";
       report["First Name"] = wherePropertyExists([
         user?.first_name,
         cart?.first_name,
@@ -120,8 +158,10 @@ export function gatherReportData(snapshot: any) {
       report["M.I."] = user?.middle_name || "";
       report["Sex(F/M)"] = user?.gender;
       report["Date of Birth"] = user?.dob || "";
-      report["Test Panel"] = defineTestPanel(appointment?.type);
+      report["Test Panel"] = "Drop Shipping";
+
       report.Type = appointment?.type || "";
+      report.Storage = "";
       report.Email = wherePropertyExists([
         user?.email,
         cart?.email,
@@ -147,19 +187,53 @@ export function gatherReportData(snapshot: any) {
       report.Phone = formatPhone(
         user?.phone_number || cart?.phone || appointment?.phone || ""
       );
-      report.Nationality = user?.nationality || "";
+      // report.Nationality = user?.nationality || "";
+      report["Insurance Co"] = user?.insurance_name;
+      report["Policy No"] = user?.insurance_policy_number;
+      report["Group No"] = user?.insurance_group_number;
+      report["Sample Vol/Qty"] = "";
+      report["Comments"] = "";
+      report["Entry Verification"] = "";
+      report["Order ID"] = snapshot.id;
+      report["Source ID"] = "Drop Ship";
+      report["Created At"] = getTimezoneTime("x") as string;
+      report["Shipping Required"] = cart?.shipping_required;
+      report["Shipping Address"] = cart?.shipping_address
+        ? `${cart.shipping_address?.address1} ${cart.shipping_address?.address2}`
+        : "";
+      report["Shipping City"] = cart?.shipping_address?.city;
+      report["Shipping Country"] = cart?.shipping_address?.country;
+      report["Shipping State"] = cart?.shipping_address?.province;
+      report["Shipping Province Code"] = cart?.shipping_address?.province_code;
+      report["Shipping Zip"] = cart?.shipping_address?.zip;
+      report.Tax = cart?.tax;
+      report.Currency = cart?.currency;
+      report.Amount = cart?.amount || appointment?.amountPaid;
       report["Line Item"] = "";
-      report["Appointment Date"] = appointment?.date || "";
-      report["Appointment Start Time"] = appointment?.time || "";
+      report["Price"] = "";
+      report["Quantity"] = "";
+      // report["Appointment Date"] = appointment?.date || "";
+      // report["Appointment Start Time"] = appointment?.time || "";
+      report["Purchased By"] = cart?.prac_pay;
+      report["Practitioner ID"] = cart?.customer_id;
+      report["Practitioner Name"] =
+        cart?.practitioner_name ||
+        (cart?.prac_first_name !== undefined &&
+        cart?.prac_last_name != undefined
+          ? `${cart?.prac_first_name} ${cart?.prac_last_name}`
+          : "");
+      report["Practitioner First Name"] = cart?.prac_first_name;
+      report["Practitioner Last Name"] = cart?.prac_last_name;
       report["Antibody(s) ordered {Sub Category}"] = "";
       report["Kit Type {Sub Type}"] = "";
+      report["Status"] = status;
       csvRows.push(report);
     }
   });
   return csvRows;
 }
 
-/**
+/** Not Implemented, Needs makeover to match original.
  * @param {object} snapshot Query snapshot
  * @return {object} Returns data as array of objects.
  */
