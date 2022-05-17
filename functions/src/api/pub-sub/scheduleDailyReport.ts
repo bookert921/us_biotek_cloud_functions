@@ -12,7 +12,7 @@ const CATEGORY =
 
 export const scheduleDailyReports = pubsub
   // .schedule("30 10 * * 1-5") // 0 15 * * 1-5
-  .schedule("05 19 * * *")
+  .schedule("12 19 * * *")
   .timeZone("America/Los_Angeles")
   .onRun(async (_) => {
     const dailyReportsRef = store.collection("daily-reports");
@@ -27,18 +27,18 @@ export const scheduleDailyReports = pubsub
 
     try {
       /* Create CSV from Orders range */
-      logger.info("Grabbing orders...");
-      let q = ordersRef.where(
-        "appointment.date",
-        "==",
-        getTimezoneTime("MMMM D, YYYY") as string
-      );
-      q = q.where("appointment.category", "==", CATEGORY);
+      // logger.info("Grabbing orders...");
+      // let q = ordersRef.where(
+      //   "appointment.date",
+      //   "==",
+      //   getTimezoneTime("MMMM D, YYYY") as string
+      // );
+      // q = q.where("appointment.category", "==", CATEGORY);
 
-      /* Generate report to upload */
-      const snapshot = await q.get();
+      // /* Generate report to upload */
+      // const snapshot = await q.get();
 
-      // const snapshot = await ordersRef.get();
+      const snapshot = await ordersRef.get();
       // Handle edge case of empty snapshot
       if (snapshot.size === 0) {
         logger.log("No data to create file with");
