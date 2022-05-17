@@ -31,12 +31,12 @@ export function gatherReportData(snapshot: any) {
   let count = 1;
   const csvRows: Partial<DailyReport>[] = [];
   snapshot.forEach((document: any) => {
-    const report: Partial<Record<keyof DailyReport, any>> = {};
     const user: User = document.get("user");
     const cart: ShoppingCart = document.get("cart");
     const appointment: AcuitySchedule = document.get("appointment");
 
     if (cart?.line_items) {
+      const report: Partial<Record<keyof DailyReport, any>> = {};
       report.No = count++;
       cart.line_items.forEach((item) => {
         const product = item?.product;
@@ -100,6 +100,7 @@ export function gatherReportData(snapshot: any) {
         csvRows.push(report);
       });
     } else {
+      const report: Partial<Record<keyof DailyReport, any>> = {};
       report.No = count++;
       report["Clinic/Physician"] = "";
       report["Ext ID"] = "";
