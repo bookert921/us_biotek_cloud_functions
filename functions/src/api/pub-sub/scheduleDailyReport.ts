@@ -11,8 +11,8 @@ import { createOrderCSV, gatherReportData } from "../../services";
 //   "COVID-19 Test For Travel To China, Serum and Nasal Swab Collection | COVID-19 中国旅行检测, 血清和鼻拭测试";
 
 export const scheduleDailyReports = pubsub
-  .schedule("30 10 * * 1-5") // 0 15 * * 1-5
-  // .schedule("35 20 * * *")
+  // .schedule("30 10 * * 1-5") // 0 15 * * 1-5
+  .schedule("07 11 * * *")
   .timeZone("America/Los_Angeles")
   .onRun(async (_) => {
     const dailyReportsRef = store.collection("daily-reports");
@@ -41,7 +41,15 @@ export const scheduleDailyReports = pubsub
       // /* Generate report to upload */
       // const snapshot = await q.get();
 
-      const data = await gatherReportData(ordersRef);
+      const snapshot = await ordersRef.get();
+      // Handle edge case of empty snapshot
+      if (snapshot.size === 0) {
+        logger.log("No data to create file with");
+        return;
+      } else {
+        logger.log("Snapshot size is: ", snapshot.size);
+      }
+      const data = gatherReportData(snapshot);
       await createOrderCSV(data, fileName, tempFilePath);
 
       logger.info(

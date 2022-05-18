@@ -17,13 +17,12 @@ import {
 } from "../utils";
 
 /**
- * @param {object} reference Query reference
+ * @param {object} snapshot Query snapshot
  * @return {object} Returns data as array of objects.
  */
-export async function gatherReportData(
-  reference: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
+export function gatherReportData(
+  snapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
 ) {
-  const snapshot = await reference.get();
   if (snapshot.size === 0) {
     logger.warn("Snapshot is empty!");
     process.exit(1);
@@ -33,7 +32,7 @@ export async function gatherReportData(
 
   let count = 1;
   const csvRows: Partial<DailyReport>[] = [];
-  snapshot.forEach((document: any) => {
+  snapshot.forEach((document) => {
     const user: User = document.get("user");
     const cart: ShoppingCart = document.get("cart");
     const appointment: AcuitySchedule = document.get("appointment");
@@ -99,7 +98,7 @@ export async function gatherReportData(
         report["Sample Vol/Qty"] = "";
         report["Comments"] = "";
         report["Entry Verification"] = "";
-        report["Order ID"] = reference.id;
+        report["Order ID"] = document.ref.id;
         report["Source ID"] = "Drop Ship";
         report["Created At"] = getTimezoneTime("x") as string;
         report["Shipping Required"] = cart?.shipping_required;
@@ -197,7 +196,7 @@ export async function gatherReportData(
       report["Sample Vol/Qty"] = "";
       report["Comments"] = "";
       report["Entry Verification"] = "";
-      report["Order ID"] = reference.id;
+      report["Order ID"] = document.ref.id;
       report["Source ID"] = "Drop Ship";
       report["Created At"] = getTimezoneTime("x") as string;
       report["Shipping Required"] = cart?.shipping_required;
