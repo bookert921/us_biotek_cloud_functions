@@ -17,10 +17,13 @@ import {
 } from "../utils";
 
 /**
- * @param {object} snapshot Query snapshot
+ * @param {object} reference Query reference
  * @return {object} Returns data as array of objects.
  */
-export function gatherReportData(snapshot: any) {
+export async function gatherReportData(
+  reference: FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>
+) {
+  const snapshot = await reference.get();
   if (snapshot.size === 0) {
     logger.warn("Snapshot is empty!");
     process.exit(1);
@@ -96,7 +99,7 @@ export function gatherReportData(snapshot: any) {
         report["Sample Vol/Qty"] = "";
         report["Comments"] = "";
         report["Entry Verification"] = "";
-        report["Order ID"] = snapshot.id;
+        report["Order ID"] = reference.id;
         report["Source ID"] = "Drop Ship";
         report["Created At"] = getTimezoneTime("x") as string;
         report["Shipping Required"] = cart?.shipping_required;
@@ -194,7 +197,7 @@ export function gatherReportData(snapshot: any) {
       report["Sample Vol/Qty"] = "";
       report["Comments"] = "";
       report["Entry Verification"] = "";
-      report["Order ID"] = snapshot.id;
+      report["Order ID"] = reference.id;
       report["Source ID"] = "Drop Ship";
       report["Created At"] = getTimezoneTime("x") as string;
       report["Shipping Required"] = cart?.shipping_required;

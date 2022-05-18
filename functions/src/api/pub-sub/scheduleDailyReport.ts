@@ -41,15 +41,7 @@ export const scheduleDailyReports = pubsub
       // /* Generate report to upload */
       // const snapshot = await q.get();
 
-      const snapshot = await ordersRef.get();
-      // Handle edge case of empty snapshot
-      if (snapshot.size === 0) {
-        logger.log("No data to create file with");
-        return;
-      } else {
-        logger.log("Snapshot size is: ", snapshot.size);
-      }
-      const data = gatherReportData(snapshot);
+      const data = await gatherReportData(ordersRef);
       await createOrderCSV(data, fileName, tempFilePath);
 
       logger.info(
