@@ -11,7 +11,8 @@ describe("Payment Processing", () => {
       new Stripe("key", {
         apiVersion: "2020-08-27",
       }),
-      cart
+      cart,
+      "cartId"
     );
     expect(response).toHaveProperty("charge");
     expect(response).toHaveProperty("status");
