@@ -20,7 +20,9 @@ import {
  * @param {object} snapshot Query snapshot
  * @return {object} Returns data as array of objects.
  */
-export function gatherReportData(snapshot: any) {
+export function gatherReportData(
+  snapshot: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
+) {
   if (snapshot.size === 0) {
     logger.warn("Snapshot is empty!");
     process.exit(1);
@@ -30,7 +32,7 @@ export function gatherReportData(snapshot: any) {
 
   let count = 1;
   const csvRows: Partial<DailyReport>[] = [];
-  snapshot.forEach((document: any) => {
+  snapshot.forEach((document) => {
     const report: Partial<Record<keyof DailyReport, any>> = {};
     const user: User = document.get("user");
     const cart: ShoppingCart = document.get("cart");
