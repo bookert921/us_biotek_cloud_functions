@@ -1,7 +1,7 @@
 import { ShoppingCart } from "../models";
 import { formatAmount, formatCardNumber, formatExpiration } from "../utils";
 import Stripe from "stripe";
-import { logger } from "firebase-functions/v1";
+import { firebaseConfig, logger } from "firebase-functions/v1";
 
 const STRIPE_KEY = process.env.STRIPE_KEY_LOCATION as string;
 
@@ -49,11 +49,13 @@ export function formatPaymentDetailsForStripe(cart: ShoppingCart) {
 /**
  * @param {Stripe} paymentAccount Stripe instance connected with secret.
  * @param {ShoppingCart} cart Cart to use in transaction.
+ * @param {string} orderId Cart to use in transaction.
  * @return {object} Returns a charge object and status from Stripe.
  */
 export async function processPaymentWithStripe(
   paymentAccount: Stripe,
-  cart: ShoppingCart
+  cart: ShoppingCart,
+  orderId: string
 ) {
   let charge;
   let status: string;
@@ -97,11 +99,16 @@ export async function processPaymentWithStripe(
         return value;
       });
 
+    const projectId = firebaseConfig()?.projectId;
     charge = await paymentAccount.charges
       .create({
         currency: "usd",
         amount: amount,
         source: cardToken.id,
+        metadata: {
+          orderId: orderId ? orderId : "",
+          projectId: projectId ? projectId : "",
+        },
       })
       .then((value) => {
         logger.info("Charge has been accepted!");

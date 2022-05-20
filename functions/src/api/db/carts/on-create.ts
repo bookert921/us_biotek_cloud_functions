@@ -35,7 +35,7 @@ export const onCartCreate = firestore
           .collection("settings")
           .get()
           .then(connectStripeThroughFirestore)
-          .then((stripe) => processPaymentWithStripe(stripe, cart));
+          .then((stripe) => processPaymentWithStripe(stripe, cart, cartID));
 
         /* Update Cart Details */
         logger.info(`Now updating cart: ${cartID}.`);
