@@ -14,7 +14,13 @@ export function connectStripeThroughFirestore(
   value: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
 ) {
   logger.info(`Accessing payments account: ${STRIPE_KEY}`);
-  const id: string = value.docs[0].get(STRIPE_KEY) || config().stripe.key;
+  let id: string;
+  try {
+    id = value.docs[0].get(STRIPE_KEY);
+  } catch (err) {
+    logger.error(err);
+    id = config().stripe.key;
+  }
   if (!id) throw new Error("No Stripe ID found to make purchase.");
   logger.info("Payments account found!");
   const stripe = new Stripe(id, {
