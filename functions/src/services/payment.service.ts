@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ShoppingCart } from "../models";
 import { formatAmount, formatCardNumber, formatExpiration } from "../utils";
 import Stripe from "stripe";
-import { firebaseConfig, logger } from "firebase-functions/v1";
+import { firebaseConfig, logger, config } from "firebase-functions/v1";
 
-const STRIPE_KEY = process.env.STRIPE_KEY_LOCATION as string;
+const STRIPE_KEY =
+  (process.env.STRIPE_KEY_LOCATION! as string) || config().stripe.key;
 
 /**
  * @param {FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>} value Value given from firestore location. Here, settings is used.
