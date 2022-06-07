@@ -2,9 +2,9 @@
 import { ShoppingCart } from "../models";
 import { formatAmount, formatCardNumber, formatExpiration } from "../utils";
 import Stripe from "stripe";
-import { firebaseConfig, logger, config } from "firebase-functions/v1";
+import { firebaseConfig, logger, config } from "firebase-functions";
 
-const STRIPE_KEY = process.env.STRIPE_KEY_LOCATION! as string;
+const STRIPE_KEY = process.env.STRIPE_KEY_LOCATION!;
 
 /**
  * @param {FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>} value Value given from firestore location. Here, settings is used.
@@ -14,8 +14,7 @@ export function connectStripeThroughFirestore(
   value: FirebaseFirestore.QuerySnapshot<FirebaseFirestore.DocumentData>
 ) {
   logger.info(`Accessing payments account: ${STRIPE_KEY}`);
-  let id: string = value.docs[0].get(STRIPE_KEY);
-  if (!id) id = config().stripe.key;
+  const id: string = value.docs[0].get(STRIPE_KEY) || config().stripe.key;
   if (!id) throw new Error("No Stripe ID found to make purchase.");
   logger.info("Payments account found!");
   const stripe = new Stripe(id, {
