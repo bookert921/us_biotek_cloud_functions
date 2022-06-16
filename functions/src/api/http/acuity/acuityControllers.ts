@@ -3,7 +3,6 @@ import { Request, Response } from "express";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import axios from "axios";
-import * as moment from "moment";
 
 const db = admin.firestore();
 // eslint-disable-next-line new-cap
@@ -22,10 +21,12 @@ export const addAppointment = async (req: Request, res: Response) => {
   const ordersRef = db.collection("orders");
   if (appointmentId != undefined) {
     try {
+      /* Find Appointment and email of client */
       const response = await acuity.get(`/appointments/${appointmentId}`);
       const appointment = response.data;
       const email = appointment.email;
 
+      /* Search Firestore for all orders related to email, from appointment */
       const snapshot = await ordersRef.where("email", "==", email).get();
       functions.logger.log(`Snapshot size: ${snapshot.size}`);
       const matches: any = [];
@@ -34,40 +35,55 @@ export const addAppointment = async (req: Request, res: Response) => {
           matches.push([doc.id, doc.data()]);
         }
       });
-      functions.logger.info(
-        `Here are the matches found:\n${matches.join("\n")}`
-      );
 
-      if (matches.length > 0) {
-        matches.sort((a: any, b: any) => b[1].created_at - a[1].created_at);
-        const docId = matches[0][0];
-        functions.logger.info(`Match found for ${docId}`);
-        ordersRef.doc(docId).set({ appointment: appointment }, { merge: true });
-      } else {
+      /* If there are no matches by email, create new order holding appointment with flag under status */
+      if (!matches.length) {
         functions.logger.warn("No matches found!");
         ordersRef.doc().create({
-          cart: {},
-          created_at: Number.parseInt(moment(Date.now()).format("x")),
-          updated_at: Number.parseInt(moment(Date.now()).format("x")),
+          cart: {}, // Empty because no orders found associated to appointment email
+          created_at: Date.now(),
+          updated_at: Date.now(),
           email: email,
           appointment: appointment,
           status: "No preliminary information found",
         });
-        functions.logger.info("Appointment created!");
+        functions.logger.info("Order with appointment created!");
+        res.status(201).end();
       }
 
+      matches.sort((a: any, b: any) => b[1].created_at - a[1].created_at);
+      const match = matches[0];
+      const [docId, doc] = match;
       functions.logger.info(
-        `Appointment ${appointment.id} for order ${ordersRef.id} added.`
+        `Most current order found with email ${email} is ${docId}`
       );
 
+      /* To avoid replacing multiple appointments, create new appointment object */
+      if (doc.appointment != null) {
+        ordersRef.doc().create({
+          ...doc,
+          appointment: appointment,
+          created_at: Date.now(),
+          updated_at: Date.now(),
+        });
+        res
+          .status(201)
+          .end(() =>
+            functions.logger.info(
+              "Appointment has been successfully added to new order."
+            )
+          );
+      }
+
+      /* Otherwise, append new appointment to most current order */
+      ordersRef.doc(docId).set({ appointment: appointment }, { merge: true });
       res
-        .status(200)
-        .send(
-          `Appointment for appointment id: ${appointment.id} has been successfully added.`
+        .status(201)
+        .end(() =>
+          functions.logger.info("Appointment has been successfully added.")
         );
     } catch (error) {
-      functions.logger.error(error);
-      res.status(400).end();
+      res.status(400).end(() => functions.logger.error(error));
     }
   }
 };
@@ -80,10 +96,12 @@ export const updateAppointment = async (req: Request, res: Response) => {
     try {
       const response = await acuity.get(`/appointments/${appointmentId}`);
       const appointment = response.data;
-
+      const email = appointment.email;
+      /* Search Firestore for orderId related to appointmentId */
       const snapshot = await ordersRef
-        .where("appointment.id", "==", appointment.id)
+        .where("appointment.id", "==", appointmentId)
         .get();
+
       functions.logger.log(`Snapshot size: ${snapshot.size}`);
       const matches: any = [];
       snapshot.forEach((doc) => {
@@ -91,24 +109,22 @@ export const updateAppointment = async (req: Request, res: Response) => {
           matches.push([doc.id, doc.data()]);
         }
       });
+      matches.sort((a: any, b: any) => b[1].created_at - a[1].created_at);
+      const match = matches[0];
+      const [docId] = match;
       functions.logger.info(
-        `Here are the matches found:\n${matches.join("\n")}`
+        `Most current order found with email ${email} is ${docId}`
       );
-      if (matches.length > 0) {
-        matches.sort((a: any, b: any) => b[1].created_at - a[1].created_at);
-        const docId = matches[0][0];
-        functions.logger.info(`Match found for ${docId}`);
-        await ordersRef.doc(docId).update({ appointment: appointment });
-        functions.logger.info(
-          `Appointment ${appointment.id} for ${ordersRef.id} has been updated.`
+
+      /* Overlay appointment object with changes */
+      ordersRef.doc(docId).update({ appointment: appointment });
+      res
+        .status(200)
+        .end(() =>
+          functions.logger.info("Appointment has been successfully added.")
         );
-      } else {
-        functions.logger.warn("No matches found!");
-      }
-      res.status(200).end();
     } catch (error) {
-      functions.logger.error(error);
-      res.status(400).end();
+      res.status(400).end(() => functions.logger.error(error));
     }
   }
 };
@@ -121,10 +137,12 @@ export const cancelAppointment = async (req: Request, res: Response) => {
     try {
       const response = await acuity.get(`/appointments/${appointmentId}`);
       const appointment = response.data;
-
+      const email = appointment.email;
+      /* Search Firestore for orderId related to appointmentId */
       const snapshot = await ordersRef
-        .where("appointment.id", "==", appointment.id)
+        .where("appointment.id", "==", appointmentId)
         .get();
+
       functions.logger.log(`Snapshot size: ${snapshot.size}`);
       const matches: any = [];
       snapshot.forEach((doc) => {
@@ -132,24 +150,22 @@ export const cancelAppointment = async (req: Request, res: Response) => {
           matches.push([doc.id, doc.data()]);
         }
       });
+      matches.sort((a: any, b: any) => b[1].created_at - a[1].created_at);
+      const match = matches[0];
+      const [docId] = match;
       functions.logger.info(
-        `Here are the matches found:\n${matches.join("\n")}`
+        `Most current order found with email ${email} is ${docId}`
       );
-      if (matches.length > 0) {
-        matches.sort((a: any, b: any) => b[1].created_at - a[1].created_at);
-        const docId = matches[0][0];
-        functions.logger.info(`Match found for ${docId}`);
-        await ordersRef.doc(docId).update({ appointment: appointment });
-        functions.logger.info(
-          `Appointment ${appointment.id} for ${ordersRef.id} has been removed.`
+
+      /* Overlay appointment object with changes */
+      ordersRef.doc(docId).update({ appointment: appointment });
+      res
+        .status(200)
+        .end(() =>
+          functions.logger.info("Appointment has been successfully added.")
         );
-      } else {
-        functions.logger.warn("No matches found!");
-      }
-      res.status(200).end();
     } catch (error) {
-      functions.logger.error(error);
-      res.status(400).end();
+      res.status(400).end(() => functions.logger.error(error));
     }
   }
 };
