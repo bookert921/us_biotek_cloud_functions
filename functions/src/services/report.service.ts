@@ -247,6 +247,7 @@ export function gatherFullReportData(snapshot: any) {
     const charge_response: ChargeResponse = document.get("charge_response");
     const user: User = document.get("user");
     const status = document.get("status");
+    const lis_number = document.get("lis_number");
     const cart: ShoppingCart = document.get("cart");
     const appointment: AcuitySchedule = document.get("appointment");
 
@@ -258,6 +259,7 @@ export function gatherFullReportData(snapshot: any) {
     report.No = count++;
     report["Clinic/Physician"] = "";
     report["Ext ID"] = "";
+    report["LIS"] = lis_number || "";
     report["Last Name"] = wherePropertyExists([
       user?.last_name,
       cart?.last_name,

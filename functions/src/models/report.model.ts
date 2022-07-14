@@ -4,6 +4,7 @@ export interface DailyReport {
   No: number;
   "Clinic/Physician": string;
   "Ext ID": string;
+  LIS: string;
   "Last Name": string;
   "Passport Number": string;
   "Vaccination Status": string;
