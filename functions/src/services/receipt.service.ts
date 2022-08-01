@@ -24,10 +24,10 @@ export function sendOrderReceipt(
     personalizations: [
       {
         to: [{ email: cart.email }],
-        substitutions: {
-          "%fname%": cart.payment_details?.cc_name_on_card || "Dear Customer",
-          "%forderID%": orderId,
-          "%faddress%": `${wherePropertyExists([
+        dynamic_template_data: {
+          name: cart.payment_details?.cc_name_on_card || "Dear Customer",
+          orderId: orderId,
+          address: `${wherePropertyExists([
             cart.address1,
           ])} ${wherePropertyExists([cart.address2])} ${wherePropertyExists([
             cart.city,
@@ -43,7 +43,7 @@ export function sendOrderReceipt(
       .split(",")
       .join("\n");
 
-    msg.personalizations[0].substitutions["%forderItems%"] = line_items;
+    msg.personalizations[0].dynamic_template_data.orderItems = line_items;
     sgMail
       .send(msg)
       .then((data) => {
