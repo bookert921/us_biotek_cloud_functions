@@ -19,8 +19,8 @@ export function sendOrderReceipt(
   orderId: string
 ) {
   const msg: any = {
-    from: process.env.SENDGRID_SENDER!,
-    templateId: process.env.SENDGRID_TEMPLATE_ID,
+    from: config().sendgrid ? config().sendgrid.sender : "",
+    templateId: config().sendgrid ? config().sendgrid.receipt_template : "",
     personalizations: [
       {
         to: [{ email: cart.email }],
