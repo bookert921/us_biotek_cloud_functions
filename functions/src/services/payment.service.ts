@@ -3,6 +3,7 @@ import { ShoppingCart } from "../models";
 import { formatAmount, formatCardNumber, formatExpiration } from "../utils";
 import Stripe from "stripe";
 import { firebaseConfig, logger, config } from "firebase-functions";
+import { sendOrderReceipt } from "./receipt.service";
 
 const STRIPE_KEY = process.env.STRIPE_KEY_LOCATION!;
 
@@ -122,6 +123,7 @@ export async function processPaymentWithStripe(
         return value;
       });
     status = charge.status;
+    sendOrderReceipt(cart, status, orderId);
   } catch (err) {
     let errorMessage = "Charge process has failed...";
     if (err instanceof Error) {
