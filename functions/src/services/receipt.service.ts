@@ -5,7 +5,7 @@ import { config } from "firebase-functions/v1";
 import { ShoppingCart } from "../models";
 import { provideLineItemsMetadata, wherePropertyExists } from "../utils";
 
-const sgKey = config().sendgrid.key;
+const sgKey = config().sendgrid.key || "";
 sgMail.setApiKey(sgKey);
 
 /**
