@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-case-declarations */
 import * as sgMail from "@sendgrid/mail";
+import { config } from "firebase-functions/v1";
 import { ShoppingCart } from "../models";
 import { provideLineItemsMetadata, wherePropertyExists } from "../utils";
 
-const sgKey = process.env.SENDGRID_API_KEY || "";
+const sgKey = config().sendgrid.key;
 sgMail.setApiKey(sgKey);
 
 /**
@@ -17,7 +19,7 @@ export function sendOrderReceipt(
   orderId: string
 ) {
   const msg: any = {
-    from: process.env.SENDGRID_SENDER || "",
+    from: process.env.SENDGRID_SENDER!,
     templateId: process.env.SENDGRID_TEMPLATE_ID,
     personalizations: [
       {
