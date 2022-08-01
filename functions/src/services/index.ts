@@ -9,4 +9,4 @@ export {
   gatherReportData,
   defineTestPanel,
 } from "./report.service";
-export { sendReceiptEmitter, sendOrderReceipt } from "./receipt.service";
+export { sendOrderReceipt } from "./receipt.service";

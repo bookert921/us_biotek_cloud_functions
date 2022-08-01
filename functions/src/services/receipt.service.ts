@@ -1,13 +1,10 @@
 /* eslint-disable no-case-declarations */
 import * as sgMail from "@sendgrid/mail";
-import * as EventEmitter from "events";
 import { ShoppingCart } from "../models";
 import { provideLineItemsMetadata, wherePropertyExists } from "../utils";
 
 const sgKey = process.env.SENDGRID_API_KEY || "";
 sgMail.setApiKey(sgKey);
-
-export const sendReceiptEmitter = new EventEmitter();
 
 /**
  * @param {ShoppingCart} cart
@@ -45,16 +42,17 @@ export function sendOrderReceipt(
       .join("\n");
 
     msg.personalizations[0].substitutions["%forderItems%"] = line_items;
-    sendReceiptEmitter.emit("succeeded", msg);
+    sgMail
+      .send(msg)
+      .then((data) => {
+        console.log("sent: ", data);
+      })
+      .catch((error) => {
+        console.error(error);
+
+        if (error.response) {
+          console.error(error.response.body);
+        }
+      });
   }
 }
-
-sendReceiptEmitter.on("succeeded", (msg) =>
-  sgMail.send(msg).catch((error) => {
-    console.error(error);
-
-    if (error.response) {
-      console.error(error.response.body);
-    }
-  })
-);
