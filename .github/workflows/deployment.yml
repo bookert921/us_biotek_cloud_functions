@@ -21,9 +21,9 @@ jobs:
       - name: Jest testing (including firestore rules)
         run: npm run test
         working-directory: functions
-      - name: deploy to practitioner
+      - name: deploy to taliferro
         uses: w9jds/firebase-action@master
         with:
-          args: deploy -P practitioner --only functions:acuity,functions:makePayment,functions:createDailyReport
+          args: deploy -P taliferro --only functions:acuity,functions:makePayment,functions:createDailyReport
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
